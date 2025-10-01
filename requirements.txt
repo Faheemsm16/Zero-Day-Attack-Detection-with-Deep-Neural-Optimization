@@ -1,0 +1,9 @@
+streamlit
+fcmeans
+shap
+imbalanced-learn
+tensorflow
+scikit-learn
+pandas
+matplotlib
+seaborn
