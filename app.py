@@ -5,7 +5,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.model_selection import train_test_split
 from imblearn.under_sampling import RandomUnderSampler
-from fcmeans import FCM
+import skfuzzy as fuzz
 import tensorflow as tf
 from tensorflow.keras import layers
 from sklearn.svm import SVC
@@ -89,11 +89,12 @@ if input_option == "Upload CSV for Full Training":
             st.write("Train class distribution:", pd.Series(y_train).value_counts().to_dict())
             st.write("Test class distribution:", pd.Series(y_test).value_counts().to_dict())
             
-            # Fuzzy C-Means Clustering
+            # Fuzzy C-Means Clustering using skfuzzy
             st.subheader("Fuzzy C-Means Clustering")
-            fcm = FCM(n_clusters=2, max_iter=150, m=2.0)
-            fcm.fit(X)
-            cluster_labels = fcm.predict(X)
+            cntr, u, _, _, _, _, _ = fuzz.cluster.cmeans(
+                X.T, c=2, m=2.0, error=0.005, maxiter=150, init=None
+            )
+            cluster_labels = np.argmax(u, axis=0)
             df_clustered = pd.DataFrame(X, columns=available_features)
             df_clustered['Cluster'] = cluster_labels
             df_clustered['Label'] = y
